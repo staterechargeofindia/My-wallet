@@ -1,9 +1,53 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+  <meta charset="UTF-8">
   <title>My Wallet</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
   <style>
-    /* 🔒 Hidden admin trigger */
+    body {
+      font-family: Arial, sans-serif;
+      background: #f2f2f2;
+      padding: 20px;
+    }
+    .card {
+      background: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      max-width: 420px;
+      margin: auto;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    h2 { text-align: center; }
+    .row { margin: 10px 0; }
+    .btn {
+      width: 100%;
+      padding: 12px;
+      margin-top: 10px;
+      background: #1dbf73;
+      color: #fff;
+      border: none;
+      font-size: 15px;
+      cursor: pointer;
+      border-radius: 6px;
+    }
+    .btn.secondary {
+      background: #2c7be5;
+    }
+    .btn.gray {
+      background: #666;
+    }
+    .qr-box {
+      margin-top: 15px;
+      padding: 15px;
+      border: 1px dashed #ccc;
+      text-align: center;
+      color: #777;
+      border-radius: 8px;
+    }
+
+    /* 🔒 Hidden Admin Trigger (bottom-right, almost invisible) */
     #adminTrigger {
       position: fixed;
       right: 2px;
@@ -19,33 +63,73 @@
 </head>
 <body>
 
-<h2>My Wallet</h2>
+<div class="card">
+  <h2>My Wallet</h2>
 
-<p><b>Name:</b> <span>User Name</span></p>
-<p><b>Balance:</b> ₹0</p>
+  <div class="row">
+    <b>Name:</b> <span id="userName">User</span>
+  </div>
 
-<button onclick="location.href='scan.html'">Scan & Pay</button>
-<button>My QR</button>
-<button onclick="location.href='history.html'">Transaction History</button>
+  <div class="row">
+    <b>Balance:</b> ₹<span id="balance">0</span>
+  </div>
+
+  <button class="btn" onclick="goScan()">Scan & Pay</button>
+  <button class="btn secondary" onclick="showQR()">My QR</button>
+  <button class="btn gray" onclick="goHistory()">Transaction History</button>
+
+  <div id="qrBox" class="qr-box">
+    QR will appear here
+  </div>
+</div>
 
 <!-- 🔐 Hidden Admin Button -->
 <div id="adminTrigger" onclick="openAdmin()"></div>
 
 <script>
-function openAdmin() {
-  const id = prompt("Enter Admin ID:");
-  const pass = prompt("Enter Admin Password:");
+  // Load basic user info
+  const name = localStorage.getItem("USER_NAME");
+  const permId = localStorage.getItem("PERM_ID");
 
-  // 🔒 YOUR CREDENTIALS (as provided)
-  const ADMIN_ID = "226492031189";
-  const ADMIN_PASS = "Cavpa3961k";
-
-  if (id === ADMIN_ID && pass === ADMIN_PASS) {
-    location.href = "admin.html";
-  } else {
-    alert("Access Denied");
+  if (!permId) {
+    // safety: agar direct open ho gaya
+    location.href = "index.html";
   }
-}
+
+  document.getElementById("userName").innerText = name || "User";
+  document.getElementById("balance").innerText = "0"; // backend se aayega baad me
+
+  function goScan() {
+    location.href = "scan.html";
+  }
+
+  function goHistory() {
+    location.href = "history.html";
+  }
+
+  function showQR() {
+    // Abhi placeholder
+    document.getElementById("qrBox").innerHTML =
+      "<b>MY QR</b><br><br>PERM ID:<br>" + permId;
+  }
+
+  // 🔒 Hidden Admin Access
+  function openAdmin() {
+    const id = prompt("Enter Admin ID:");
+    const pass = prompt("Enter Admin Password:");
+
+    // 🔐 AAPKE CREDENTIALS (as provided)
+    const ADMIN_ID = "226492031189";
+    const ADMIN_PASS = "Cavpa3961k";
+
+    if (id === ADMIN_ID && pass === ADMIN_PASS) {
+      // optional: flag set
+      localStorage.setItem("IS_ADMIN", "1");
+      location.href = "admin.html";
+    } else {
+      alert("Access Denied");
+    }
+  }
 </script>
 
 </body>
