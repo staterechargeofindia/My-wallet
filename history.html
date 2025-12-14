@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Transaction History</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f2f2f2;
+      padding: 20px;
+    }
+    .card {
+      background: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      max-width: 480px;
+      margin: auto;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    h2 {
+      text-align: center;
+      margin-bottom: 15px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+    }
+    th, td {
+      padding: 8px;
+      border-bottom: 1px solid #e0e0e0;
+      text-align: left;
+    }
+    th {
+      background: #f7f7f7;
+    }
+    .debit {
+      color: #d9534f;
+      font-weight: bold;
+    }
+    .credit {
+      color: #1dbf73;
+      font-weight: bold;
+    }
+    .back {
+      margin-top: 15px;
+      width: 100%;
+      padding: 12px;
+      background: #2c7be5;
+      color: #fff;
+      border: none;
+      font-size: 15px;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    .empty {
+      text-align: center;
+      color: #777;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="card">
+  <h2>My Transaction History</h2>
+
+  <table id="historyTable">
+    <thead>
+      <tr>
+        <th>Date</th>
+        <th>Type</th>
+        <th>Amount</th>
+        <th>To / From</th>
+      </tr>
+    </thead>
+    <tbody id="historyBody">
+      <!-- Rows JS se add hongi -->
+    </tbody>
+  </table>
+
+  <div id="emptyMsg" class="empty" style="display:none;">
+    No transactions found
+  </div>
+
+  <button class="back" onclick="goBack()">Back to Dashboard</button>
+</div>
+
+<script>
+  /*
+    Abhi demo ke liye history localStorage me rakhi hai
+    Real system me ye backend (DB) se load hogi
+  */
+
+  // Demo history (agar pehle
