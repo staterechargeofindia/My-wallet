@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>My Wallet</title>
+  <style>
+    /* 🔒 Hidden admin trigger */
+    #adminTrigger {
+      position: fixed;
+      right: 2px;
+      bottom: 2px;
+      width: 1px;
+      height: 1px;
+      opacity: 0.01;
+      background: transparent;
+      z-index: 9999;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+<h2>My Wallet</h2>
+
+<p><b>Name:</b> <span>User Name</span></p>
+<p><b>Balance:</b> ₹0</p>
+
+<button onclick="location.href='scan.html'">Scan & Pay</button>
+<button>My QR</button>
+<button onclick="location.href='history.html'">Transaction History</button>
+
+<!-- 🔐 Hidden Admin Button -->
+<div id="adminTrigger" onclick="openAdmin()"></div>
+
+<script>
+function openAdmin() {
+  const id = prompt("Enter Admin ID:");
+  const pass = prompt("Enter Admin Password:");
+
+  // 🔒 YOUR CREDENTIALS (as provided)
+  const ADMIN_ID = "226492031189";
+  const ADMIN_PASS = "Cavpa3961k";
+
+  if (id === ADMIN_ID && pass === ADMIN_PASS) {
+    location.href = "admin.html";
+  } else {
+    alert("Access Denied");
+  }
+}
+</script>
+
+</body>
+</html>
