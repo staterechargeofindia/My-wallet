@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Create Wallet</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f2f2f2;
+      padding: 20px;
+    }
+    .box {
+      background: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      max-width: 400px;
+      margin: auto;
+    }
+    h2 {
+      text-align: center;
+    }
+    input {
+      width: 100%;
+      padding: 10px;
+      margin-top: 10px;
+    }
+    button {
+      width: 100%;
+      padding: 12px;
+      margin-top: 15px;
+      background: #1dbf73;
+      color: white;
+      border: none;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    .note {
+      font-size: 12px;
+      color: #555;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="box">
+  <h2>Create Your Wallet</h2>
+
+  <!-- User Details -->
+  <input type="text" id="name" placeholder="Full Name" required>
+
+  <input type="tel" id="mobile" placeholder="Mobile Number" maxlength="10" required>
+
+  <input type="text" id="aadhaar" placeholder="Aadhaar Number (12 digits)" maxlength="12" required>
+
+  <input type="date" id="dob" required>
+
+  <input type="file" id="photo" accept="image/*" required>
+
+  <label style="margin-top:10px; display:block;">
+    <input type="checkbox" id="confirm">
+    I confirm that all details are correct
+  </label>
+
+  <button onclick="createWallet()">Create Wallet</button>
+
+  <p class="note">
+    ⚠️ Aadhaar & DOB galat hone par future me wallet recover nahi ho payega.
+  </p>
+</div>
+
+<script>
+  /*
+    Abhi ke liye simple placeholder logic
+    Actual validation + backend next codes me aayega
+  */
+
+  function createWallet() {
+    const name = document.getElementById("name").value.trim();
+    const mobile = document.getElementById("mobile").value.trim();
+    const aadhaar = document.getElementById("aadhaar").value.trim();
+    const dob = document.getElementById("dob").value;
+    const confirm = document.getElementById("confirm").checked;
+
+    if (!name || !mobile || !aadhaar || !dob || !confirm) {
+      alert("Please fill all details and confirm.");
+      return;
+    }
+
+    // Temporary: PERM_ID generate (real hash next step me)
+    const permId = "PERM_" + Date.now();
+
+    // Save minimal data locally (demo)
+    localStorage.setItem("PERM_ID", permId);
+    localStorage.setItem("USER_NAME", name);
+
+    // Next page
+    window.location.href = "dashboard.html";
+  }
+</script>
+
+</body>
+</html>
