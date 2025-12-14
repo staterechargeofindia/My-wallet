@@ -1,26 +1,197 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+  <meta charset="UTF-8">
   <title>Admin Panel</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f2f2f2;
+      padding: 20px;
+    }
+    .card {
+      background: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      max-width: 520px;
+      margin: auto;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    h2 { text-align: center; }
+    .row { margin-top: 10px; }
+    input {
+      width: 100%;
+      padding: 10px;
+      margin-top: 6px;
+    }
+    button {
+      width: 100%;
+      padding: 12px;
+      margin-top: 10px;
+      border: none;
+      border-radius: 6px;
+      font-size: 15px;
+      cursor: pointer;
+      color: #fff;
+    }
+    .add { background: #1dbf73; }
+    .withdraw { background: #d9534f; }
+    .logout { background: #666; }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 15px;
+      font-size: 14px;
+    }
+    th, td {
+      padding: 8px;
+      border-bottom: 1px solid #e0e0e0;
+      text-align: left;
+    }
+    th { background: #f7f7f7; }
+    .note {
+      font-size: 12px;
+      color: #777;
+      margin-top: 10px;
+    }
+  </style>
 </head>
 <body>
 
-<h2>Admin Dashboard</h2>
+<script>
+  // 🔒 Admin access check (dashboard se flag set hota hai)
+  if (localStorage.getItem("IS_ADMIN") !== "1") {
+    alert("Access denied");
+    location.href = "dashboard.html";
+  }
+</script>
 
-<p><b>Admin Wallet Balance:</b> ₹100000000000</p>
+<div class="card">
+  <h2>Admin Dashboard</h2>
 
-<h3>Add / Remove User Balance</h3>
+  <div class="row">
+    <b>Admin Wallet Balance:</b> ₹<span id="adminBalance">100000000000</span>
+  </div>
 
-<input placeholder="User PERM_ID"><br><br>
-<input placeholder="Amount"><br><br>
+  <hr>
 
-<button>Add Balance</button>
-<button>Withdraw Balance</button>
+  <h3>Add / Withdraw User Balance</h3>
 
-<hr>
+  <div class="row">
+    <label>User PERM_ID</label>
+    <input type="text" id="userId" placeholder="Enter User PERM_ID">
+  </div>
 
-<h3>Admin Logs</h3>
-<p>All admin transactions will appear here</p>
+  <div class="row">
+    <label>Amount</label>
+    <input type="number" id="amount" placeholder="Enter Amount">
+  </div>
+
+  <button class="add" onclick="addBalance()">➕ Add Balance</button>
+  <button class="withdraw" onclick="withdrawBalance()">➖ Withdraw Balance</button>
+
+  <p class="note">
+    ✔ Admin actions par 24h limit apply nahi hoti  
+    ✔ Balance add/withdraw ka log maintain hota hai
+  </p>
+
+  <hr>
+
+  <h3>Admin Logs</h3>
+
+  <table id="logTable">
+    <thead>
+      <tr>
+        <th>Date</th>
+        <th>Action</th>
+        <th>User</th>
+        <th>Amount</th>
+      </tr>
+    </thead>
+    <tbody id="logBody">
+      <!-- Logs JS se add honge -->
+    </tbody>
+  </table>
+
+  <button class="logout" onclick="logout()">Logout Admin</button>
+</div>
+
+<script>
+  // Demo admin balance
+  let adminBalance = 100000000000;
+  document.getElementById("adminBalance").innerText = adminBalance;
+
+  // Demo logs (real system me backend/DB se aayenge)
+  let adminLogs = JSON.parse(localStorage.getItem("ADMIN_LOGS")) || [];
+
+  function addBalance() {
+    const user = document.getElementById("userId").value.trim();
+    const amt = parseInt(document.getElementById("amount").value);
+
+    if (!user || isNaN(amt) || amt <= 0) {
+      alert("Enter valid user and amount");
+      return;
+    }
+
+    adminBalance -= amt;
+    document.getElementById("adminBalance").innerText = adminBalance;
+
+    addLog("ADD", user, amt);
+    alert("Balance added successfully");
+  }
+
+  function withdrawBalance() {
+    const user = document.getElementById("userId").value.trim();
+    const amt = parseInt(document.getElementById("amount").value);
+
+    if (!user || isNaN(amt) || amt <= 0) {
+      alert("Enter valid user and amount");
+      return;
+    }
+
+    adminBalance += amt;
+    document.getElementById("adminBalance").innerText = adminBalance;
+
+    addLog("WITHDRAW", user, amt);
+    alert("Balance withdrawn successfully");
+  }
+
+  function addLog(action, user, amount) {
+    const log = {
+      date: new Date().toLocaleString(),
+      action: action,
+      user: user,
+      amount: amount
+    };
+    adminLogs.unshift(log);
+    localStorage.setItem("ADMIN_LOGS", JSON.stringify(adminLogs));
+    renderLogs();
+  }
+
+  function renderLogs() {
+    const body = document.getElementById("logBody");
+    body.innerHTML = "";
+    adminLogs.forEach(l => {
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td>${l.date}</td>
+        <td>${l.action}</td>
+        <td>${l.user}</td>
+        <td>₹${l.amount}</td>
+      `;
+      body.appendChild(tr);
+    });
+  }
+
+  function logout() {
+    localStorage.removeItem("IS_ADMIN");
+    location.href = "dashboard.html";
+  }
+
+  renderLogs();
+</script>
 
 </body>
 </html>
