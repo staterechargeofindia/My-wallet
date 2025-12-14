@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Wallet App</title>
+</head>
+<body>
+
+<script>
+  /*
+    index.html ka kaam:
+    - Check karna ki user pehle se registered hai ya nahi
+    - Agar haan → dashboard.html
+    - Agar nahi → register.html
+  */
+
+  // Permanent User ID (Aadhaar + DOB se bana hash)
+  const permId = localStorage.getItem("PERM_ID");
+
+  if (permId && permId !== "") {
+    // User already registered
+    window.location.href = "dashboard.html";
+  } else {
+    // New user
+    window.location.href = "register.html";
+  }
+</script>
+
+</body>
+</html>
