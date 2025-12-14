@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Scan & Pay</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- QR Scan Library -->
+  <script src="https://unpkg.com/html5-qrcode"></script>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f2f2f2;
+      padding: 20px;
+    }
+    .card {
+      background: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      max-width: 420px;
+      margin: auto;
+    }
+    h2 {
+      text-align: center;
+    }
+    #reader {
+      width: 100%;
+      margin: 10px 0;
+    }
+    input {
+      width: 100%;
+      padding: 10px;
+      margin-top: 10px;
+    }
+    button {
+      width: 100%;
+      padding: 12px;
+      margin-top: 10px;
+      background: #1dbf73;
+      color: #fff;
+      border: none;
+      font-size: 15px;
+      cursor: pointer;
+      border-radius: 6px;
+    }
+    .secondary {
+      background: #2c7be5;
+    }
+    .user-box {
+      margin-top: 10px;
+      padding: 10px;
+      border: 1px dashed #ccc;
+      border-radius: 6px;
+      display: none;
+    }
+    img {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+  </style>
+</head>
+<body>
+
+<div class="card">
+  <h2>Scan & Pay</h2>
+
+  <!-- Camera Scan -->
+  <div id="reader"></div>
+
+  <!-- Gallery QR -->
+  <input type="file" accept="image/*" onchange="scanFromGallery(this)">
+
+  <!-- Receiver Info -->
+  <div id="userBox" class="user-box">
+    <img id="receiverPhoto" src="">
+    <p><b id="receiverName">User Name</b></p>
+  </div>
+
+  <!-- Amount -->
+  <input type="number" id="amount" placeholder="Enter Amount (1 – 100000)">
+
+  <button onclick="sendMoney()">Send Money</button>
+
+  <button class="secondary" onclick="goBack()">Back</button>
+</div>
+
+<script>
+  let receiverId = null;
+
+  // Start Camera QR Scan
+  const qr = new Html5Qrcode("reader");
+  qr.start(
+    { facingMode: "environment" },
+    { fps: 10, qrbox: 250 },
+    qrText => handleQR(qrText),
+    err => {}
+  );
+
+  // Handle QR result
+  function handleQR(text) {
+    try {
+      const data = JSON.parse(text);
+
+      // Check app QR
+      if (data.app !== "MY_WALLET") {
+        alert("Invalid QR Code");
+        return;
+      }
+
+      receiverId = data.userId;
+
+      // Placeholder receiver details (backend se aayega)
+      document.getElementById("receiverName").innerText = "Receiver User";
+      document.getElementById("receiverPhoto").src = "https://via.placeholder.com/60";
+      document.getElementById("userBox").style.display = "block";
+
+      qr.stop();
+
+    } catch (e) {
+      alert("Invalid QR format");
+    }
+  }
+
+  // Scan QR from Gallery
+  function scanFromGallery(input) {
+    const file = input.files[0];
+    if (!file) return;
+
+    Html5Qrcode.scanFile(file, true)
+      .then(text => handleQR(text))
+      .catch(err => alert("Unable to scan this image"));
+  }
+
+  // Send Money
+  function sendMoney() {
+    const amt = parseInt(document.getElementById("amount").value);
+
+    if (!receiverId) {
+      alert("Please scan a valid QR first");
+      return;
+    }
+
+    if (isNaN(amt) || amt < 1 || amt > 100000) {
+      alert("Amount must be between ₹1 and ₹1,00,000");
+      return;
+    }
+
+    // 24h limit & backend check next code me
+    alert("Payment initiated for ₹" + amt);
+
+    // Success demo
+    location.href = "receipt.html";
+  }
+
+  function goBack() {
+    location.href = "dashboard.html";
+  }
+</script>
+
+</body>
+</html>
