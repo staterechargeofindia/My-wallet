@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Payment Receipt</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- Screenshot library -->
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+
+  <style>
+    body {
+      font-family: system-ui, Arial, sans-serif;
+      background: #f2f2f2;
+      padding: 20px;
+    }
+    .receipt {
+      max-width: 360px;
+      margin: auto;
+      background: #fff;
+      border-radius: 16px;
+      padding: 20px;
+      text-align: center;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.12);
+    }
+    .success {
+      width: 64px;
+      height: 64px;
+      margin: auto;
+      background: #1dbf73;
+      color: #fff;
+      border-radius: 50%;
+      font-size: 34px;
+      line-height: 64px;
+    }
+    h2 {
+      color: #1dbf73;
+      margin: 10px 0 5px;
+    }
+    h1 {
+      margin: 5px 0 15px;
+      font-size: 32px;
+    }
+    .details {
+      text-align: left;
+      margin-top: 10px;
+      font-size: 14px;
+    }
+    .details p {
+      display: flex;
+      justify-content: space-between;
+      margin: 8px 0;
+      border-bottom: 1px dashed #e0e0e0;
+      padding-bottom: 6px;
+    }
+    .label {
+      color: #777;
+    }
+    .actions {
+      max-width: 360px;
+      margin: 15px auto 0;
+      display: flex;
+      gap: 10px;
+    }
+    button {
+      flex: 1;
+      padding: 12px;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+      font-size: 15px;
+    }
+    .share {
+      background: #25D366;
+      color: #fff;
+    }
+    .done {
+      background: #2c7be5;
+      color: #fff;
+    }
+  </style>
+</head>
+<body>
+
+<!-- 📸 RECEIPT AREA (Screenshot yahin se banega) -->
+<div id="receiptBox" class="receipt">
+  <div class="success">✓</div>
+  <h2>Payment Successful</h2>
+  <h1>₹<span id="amount">0</span></h1>
+
+  <div class="details">
+    <p><span class="label">Paid To</span><b id="toUser">—</b></p>
+    <p><span class="label">From</span><b id="fromUser">—</b></p>
+    <p><span class="label">UTR</span><b id="utr">—</b></p>
+    <p><span class="label">Transaction ID</span><b id="txn">—</b></p>
+    <p><span class="label">Date & Time</span><b id="time">—</b></p>
+    <p><span class="label">Balance After</span><b>₹<span id="balance">0</span></b></p>
+  </div>
+</div>
+
+<!-- ACTION BUTTONS (Screenshot ke bahar) -->
+<div class="actions">
+  <button class="share" onclick="shareScreenshot()">📤 Share</button>
+  <button class="done" onclick="goHome()">Done</button>
+</div>
+
+<script>
+  // 🔧 Demo data (real data backend se aayega)
+  const data = {
+    amount: localStorage.getItem("LAST_AMOUNT") || "500",
+    to: localStorage.getItem("LAST_TO") || "Receiver User",
+    from: localStorage.getItem("USER_NAME") || "Your Wallet",
+    utr: "UTR" + Date.now(),
+    txn: "TXN" + Math.floor(Math.random() * 1000000),
+    time: new Date().toLocaleString(),
+    balance: "1500"
+  };
+
+  // Fill receipt
+  document.getElementById("amount").innerText = data.amount;
+  document.getElementById("toUser").innerText = data.to;
+  document.getElementById("fromUser").innerText = data.from;
+  document.getElementById("utr").innerText = data.utr;
+  document.getElementById("txn").innerText = data.txn;
+  document.getElementById("time").innerText = data.time;
+  document.getElementById("balance").innerText = data.balance;
+
+  // 📸 Screenshot & Share (download image; user WhatsApp pe share kar sakta hai)
+  function shareScreenshot() {
+    html2canvas(document.getElementById("receiptBox")).then(canvas => {
+      const link = document.createElement("a");
+      link.download = "transaction-receipt.png";
+      link.href = canvas.toDataURL("image/png");
+      link.click();
+    });
+  }
+
+  function goHome() {
+    location.href = "dashboard.html";
+  }
+</script>
+
+</body>
+</html>
